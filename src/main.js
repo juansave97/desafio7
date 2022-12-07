@@ -20,27 +20,27 @@ app.use(express.static('public'))
 
 
 io.on('connection', async socket => {
-    console.log('Nuevo cliente conectado!');
+    console.log('Nuevo cliente conectado!', Date.now());
 
-    socket.emit('productos', productosApi.listarAll());
-
-    socket.on('update', producto => {
-        console.log('Producto a guardar', producto);
+    socket.emit('productos', await productosApi.listarAll());
+    
+    socket.on('update', async producto => {
         productosApi.guardar(producto)
-        io.sockets.emit('productos', productosApi.listarAll());
+
+        io.sockets.emit('productos', await productosApi.listarAll());
     })
 
     socket.emit('mensajes', await mensajesApi.listarAll());
-
+    
     socket.on('nuevoMensaje', async mensaje => {
         mensaje.time = new Date().toLocaleString()
-        console.log('Mensaje a guardar', mensaje);
+
         await mensajesApi.guardar(mensaje)
+
         io.sockets.emit('mensajes', await mensajesApi.listarAll());
     })
+
 });
-
-
 
 const PORT = 8080
 const connectedServer = httpServer.listen(PORT, () => {

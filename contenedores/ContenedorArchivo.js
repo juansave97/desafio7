@@ -1,5 +1,5 @@
 const { options } = require('../options/SQLite3.js')
-const knex = require('knex')(options)
+const knex = require('knex')(options);
 
 class ContenedorArchivo {
 
@@ -12,13 +12,12 @@ class ContenedorArchivo {
     }
 
     async listarAll() {
-        console.log('im hereee');
-        knex.from('messages').select('*')
-        .then((messages) => {
-            console.log('messages query', messages);
-            return messages
-        })
-        .catch((err) => { console.log(`Error ${err}`); throw err })
+        try {
+            return await knex.from('messages').select('*')
+        } catch (error) {
+            console.error(`Error ${err}`)
+            throw err
+        } 
     }
 
     async guardar(message) {
@@ -53,7 +52,7 @@ class ContenedorArchivo {
         knex.from('messages').del()
         .catch((err) => { 
             console.log(`Error ${err}`)
-            throw new Error(`Error al borrar todo: ${error}`)
+            throw new Error(`Error al borrar todo: ${err}`)
         })
     }
 }

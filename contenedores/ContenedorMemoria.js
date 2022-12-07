@@ -1,5 +1,5 @@
 const { options } = require('../options/mariaDB.js')
-const knex = require('knex')(options)
+const knex = require('knex')(options);
 
 class ContenedorMemoria {
     listar(id) {
@@ -10,13 +10,13 @@ class ContenedorMemoria {
         .catch((err) => { console.log(`Error ${err}`); throw err })
     }
 
-    listarAll() {
-        knex.from('products').select('*')
-        .then((products) => {
-            console.log('products query', products);
-            return products
-        })
-        .catch((err) => { console.log(`Error ${err}`); throw err })
+    async listarAll() {
+        try {
+            return await knex.from('products').select('*') 
+        } catch (error) {
+            console.error(`Error ${err}`)
+            throw err
+        }       
     }
 
     async guardar(product) {
@@ -50,7 +50,7 @@ class ContenedorMemoria {
         knex.from('products').del()
         .catch((err) => { 
             console.log(`Error ${err}`)
-            throw new Error(`Error al borrar todo: ${error}`)
+            throw new Error(`Error al borrar todo: ${err}`)
         })
     }
 }
